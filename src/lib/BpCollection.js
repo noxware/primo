@@ -473,6 +473,59 @@ class BulletproofCollection {
     return res;
   }
 
+  //// STATIC ////
+
+  /**
+   * Returns a new BpCollection from a Map.
+   * 
+   * @param {Map<any, any>} map 
+   * @param {BpCollectionConfig} [config]
+   */
+  static fromMap(map, config) {
+    const res = new BulletproofCollection(config);
+    map.forEach((value, key) => {
+      res.addCustom(key, value);
+    });
+
+    return res;
+  }
+
+  /**
+   * Returns a new BpCollection from an Object.
+   * 
+   * Symbols are ignored. Only properties listed in a for...in are added.
+   * 
+   * @param {Record<any, any>} obj 
+   * @param {BpCollectionConfig} [config]
+   */
+  static fromObject(obj, config) {
+    const res = new BulletproofCollection(config);
+    for (const p in obj)
+      if (obj.hasOwnProperty(p))
+        res.addCustom(p, obj[p]);
+    
+    return res;
+  }
+
+  /**
+   * Returns a new BpCollection from an Array.
+   * 
+   * The configuration must have a key extractor.
+   * 
+   * @param {any[]} arr 
+   * @param {BpCollectionConfig} [config]
+   */
+  static fromArray(arr, config) {
+    if (!config.keyExtractor)
+      throw new IncompatibleConfigurationError(`'fromArray' requires a key extractor.`);
+
+    const res = new BulletproofCollection(config);
+    for (const e of arr)
+        res.add(e);
+    
+    return res;
+  }
+
   //// ITERATION UTILS ////
 
   /**
