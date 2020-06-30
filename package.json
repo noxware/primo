@@ -1,0 +1,26 @@
+{
+  "name": "primo",
+  "version": "0.0.3",
+  "description": "A Discord Bot for playing customized Mafia games.",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon ./src/server.js",
+    "test": "nodemon ./test.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "mafia",
+    "game"
+  ],
+  "author": "Noxware",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^14.0.14",
+    "nodemon": "^2.0.4",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "discord.js": "^12.2.0"
+  }
+}

@@ -1,0 +1,3 @@
+s('es', 'commands', 'vote', args)
+
+s takes route until the json property, then takes args for format like {}

@@ -1,0 +1,28 @@
+1. after not unused rols left
+
+2. say lap artida va a comenzar
+
+3. say cierren los ojos
+
+4. say abra los ojos el (i).  !
+
+5. send dm with numbers to select
+
+6. wait response
+
+7. (optional) say something good about choice
+
+goto 4 with i++ until end
+
+8. update data
+
+9. say results and ask votes
+
+10. wait votation
+
+11. update data
+
+goto 3 until game end condition
+
+12. say winner
+

@@ -1,0 +1,5 @@
+- make set last and first writable (at least last)
+
+- add caching for indexes
+
+- MANUAL cache() METHOD

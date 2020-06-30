@@ -1,0 +1,5 @@
+killers
+
+player manipulators - healers
+
+action manipulators

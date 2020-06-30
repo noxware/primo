@@ -1,0 +1,14 @@
+{
+  "name": "mafia-god-bot",
+  "version": "0.1.0",
+  "description": "A bot for playing a (modified) game called Mafia with my friends on Discord.",
+  "main": "bot-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Noxware",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.2.0"
+  }
+}
