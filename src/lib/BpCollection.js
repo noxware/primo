@@ -102,7 +102,7 @@ const defaultBulletproofConfig = {
  * @template K
  * @template V
  */
-class BulletproofCollection {
+class BpCollection {
   /**
    * 
    * @param {BpCollectionConfig} [config]
@@ -228,7 +228,7 @@ class BulletproofCollection {
    * 
    * @param {V} value
    * 
-   * @returns {BulletproofCollection<K, V>}
+   * @returns {BpCollection<K, V>}
    */
   add(value) {
     return this.addCustom(this._keyExtractor(value), value);
@@ -240,7 +240,7 @@ class BulletproofCollection {
    * @param {K} key
    * @param {V} value
    * 
-   * @returns {BulletproofCollection<K, V>}
+   * @returns {BpCollection<K, V>}
    */
   addCustom(key, value) {
     if (key === undefined)
@@ -442,6 +442,57 @@ class BulletproofCollection {
   }
 
   /**
+   * Returns a new BpCollection only preserving the keys that appear in the keys iterable.
+   * 
+   * The resultant BpCollection has the same keyExtractor but no events support.
+   * 
+   * @param {Iterable<K>} keys 
+   * @returns {BpCollection<K, V>}
+   */
+  intersection(keys) {
+    const res = new BpCollection({keyExtractor: this._keyExtractor});
+
+    for (const k of keys) {
+      if (this.hasKey(k))
+        res.addCustom(k, this.key(k));
+    }
+
+    return res;
+  }
+
+  /**
+   * Returns a new BpCollection preserving the keys/values of both BpCollections.
+   * 
+   * A Map can be passed as a parameter insted.
+   * If both collections has the same key, only the key/value of the second collection will be stored.
+   * The resultant BpCollection has the same keyExtractor but no events support.
+   * 
+   * @param {BpCollection<any, any> | Map<any, any>} col 
+   * @returns {BpCollection<any, any>}
+   */
+  union(col) {
+    const res = new BpCollection({keyExtractor: this._keyExtractor});
+
+    this.forEach((v, k) => {
+      res.addCustom(k, v);
+    });
+
+    col.forEach(/** @type {(v: any, k: any) => void} */ (v, k) => {
+      res.addCustom(k, v);
+    });
+
+    return res;
+  }
+
+  cache() {
+    throw new Error(`'cache' is not implemented yet.`);
+  }
+
+  lock() {
+    throw new Error(`'lock' is not implemented yet.`);
+  }
+
+  /**
    * Returns a new object with the keys/values of this collection.
    * 
    * @returns {Object<K, V>}
@@ -482,7 +533,7 @@ class BulletproofCollection {
    * @param {BpCollectionConfig} [config]
    */
   static fromMap(map, config) {
-    const res = new BulletproofCollection(config);
+    const res = new BpCollection(config);
     map.forEach((value, key) => {
       res.addCustom(key, value);
     });
@@ -499,7 +550,7 @@ class BulletproofCollection {
    * @param {BpCollectionConfig} [config]
    */
   static fromObject(obj, config) {
-    const res = new BulletproofCollection(config);
+    const res = new BpCollection(config);
     for (const p in obj)
       if (obj.hasOwnProperty(p))
         res.addCustom(p, obj[p]);
@@ -508,18 +559,18 @@ class BulletproofCollection {
   }
 
   /**
-   * Returns a new BpCollection from an Array.
+   * Returns a new BpCollection from an iterable of elements (like an array) with some key property.
    * 
    * The configuration must have a key extractor.
    * 
-   * @param {any[]} arr 
+   * @param {Iterable<any>} arr 
    * @param {BpCollectionConfig} [config]
    */
-  static fromArray(arr, config) {
+  static fromIterable(arr, config) {
     if (!config.keyExtractor)
-      throw new IncompatibleConfigurationError(`'fromArray' requires a key extractor.`);
+      throw new IncompatibleConfigurationError(`'fromIterable' requires a key extractor.`);
 
-    const res = new BulletproofCollection(config);
+    const res = new BpCollection(config);
     for (const e of arr)
         res.add(e);
     
@@ -580,7 +631,7 @@ class BulletproofCollection {
    * @callback ForEachCallback
    * @param {V} value
    * @param {K} key
-   * @param {BulletproofCollection<K, V>} bpc
+   * @param {BpCollection<K, V>} bpc
    */
 
   /**
@@ -596,6 +647,30 @@ class BulletproofCollection {
   }
 
   /**
+   * Evaluates each element of the collection with the function and returns the amount of 'true' returned.
+   * 
+   * If no function is provided, it will return the size of the collection.
+   * 
+   * @param {ForEachCallback} fn
+   * @param {any} [thisArg]
+   * @returns {number}
+   */
+  count(fn, thisArg) {
+    let i = 0;
+
+    if (fn) {
+      this.forEach((value, key, bpc) => {
+        if (fn.call(thisArg, value, key, bpc))
+          i++;
+      });
+    } else {
+      i = this.size;
+    }
+
+    return i;
+  }
+
+  /**
    * Equivalent to array map but with key as second parameter.
    * 
    * @param {ForEachCallback} fn
@@ -603,7 +678,7 @@ class BulletproofCollection {
    * 
    * @returns {any[]}
    */
-  map(fn, thisArg) {
+  mapToArray(fn, thisArg) {
     /** @type {any[]} */
     const res = [];
 
@@ -615,18 +690,18 @@ class BulletproofCollection {
   }
 
   /**
-   * Similar to filterToArray but returns a minimal BulletproofCollection.
+   * Similar to filterToArray but returns a minimal BpCollection.
    * 
    * The resultant BpCollection has the same keyExtractor but no events support.
    * 
    * @param {ForEachCallback} fn
    * @param {any} [thisArg]
    * 
-   * @returns {BulletproofCollection<K, V>}
+   * @returns {BpCollection<K, V>}
    */
   filter(fn, thisArg) {
-    /** @type {BulletproofCollection<K, V>} */
-    const res = new BulletproofCollection({keyExtractor: this._keyExtractor});
+    /** @type {BpCollection<K, V>} */
+    const res = new BpCollection({keyExtractor: this._keyExtractor});
 
     this.forEach((value, key, bpc) => {
       if (fn.call(thisArg, value, key, bpc))
@@ -655,6 +730,10 @@ class BulletproofCollection {
 
     return res;
   }
+
+  //// Events ////
+
+  // wait(condFunction) TODO
 }
 
-module.exports = BulletproofCollection;
+module.exports = BpCollection;
