@@ -19,7 +19,7 @@ class PlayerCollection extends BpCollection {
     });
 
     /**
-     * Aux to get players in role order.
+     * Aux to get players by role.
      * 
      * @type {Map<string, Player[]>}
      */
@@ -122,6 +122,15 @@ class PlayerCollection extends BpCollection {
    */
   * inActionOrder() {
     for (const r of roles.rolesInActionOrder)
+      for (const p of this._rolesToPlayers.get(r.name)  || [])
+        yield p;
+  }
+
+  /**
+   * @returns {Iterable<Player>}
+   */
+  * inTurnOrder() {
+    for (const r of roles.rolesInTurnOrder)
       for (const p of this._rolesToPlayers.get(r.name)  || [])
         yield p;
   }

@@ -12,8 +12,6 @@ const { Role } = require('discord.js');
  * 
  * @extends {BpCollection<string, Role>}
  */
-class RoleCollection extends BpCollection {
-  
-}
+class RoleCollection extends BpCollection {}
 
 module.exports = RoleCollection;
