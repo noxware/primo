@@ -1,4 +1,5 @@
 const BpCollection = require('../lib/BpCollection');
+const roles = require('../roles');
 
 /**
  * Type imports.
