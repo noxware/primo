@@ -15,8 +15,7 @@ const roles = require('../roles');
 class PlayerCollection extends BpCollection {
   constructor() {
     super({
-      keyExtractor: p => p.id,
-      enableEvents: true
+      keyExtractor: /** @type {(p: Player) => string} */ (p => p.id)
     });
 
     /**
@@ -117,12 +116,15 @@ class PlayerCollection extends BpCollection {
   }
 
   //// Custom iteration ////
-
-  /**
-   * @returns {Iterable<Player>}
-   */
-  * inActionOrder() {
+  
+  * _inActionOrder() {
     for (const r of roles.rolesInActionOrder)
+      for (const p of this._rolesToPlayers.get(r.name)  || [])
+        yield p;
+  }
+
+  * _inTurnOrder() {
+    for (const r of roles.rolesInTurnOrder)
       for (const p of this._rolesToPlayers.get(r.name)  || [])
         yield p;
   }
@@ -130,10 +132,15 @@ class PlayerCollection extends BpCollection {
   /**
    * @returns {Iterable<Player>}
    */
-  * inTurnOrder() {
-    for (const r of roles.rolesInTurnOrder)
-      for (const p of this._rolesToPlayers.get(r.name)  || [])
-        yield p;
+  get inActionOrder() {
+    return this._inActionOrder();
+  }
+
+  /**
+   * @returns {Iterable<Player>}
+   */
+  get inTurnOrder() {
+    return this._inTurnOrder();
   }
 }
 

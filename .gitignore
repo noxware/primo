@@ -1,5 +1,6 @@
 # MY RULES
 config.json
+ignored/
 
 # Logs
 logs

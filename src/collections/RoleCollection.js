@@ -1,5 +1,4 @@
 const BpCollection = require('../lib/BpCollection');
-const { Role } = require('discord.js');
 
 /**
  * Type imports.
@@ -12,6 +11,12 @@ const { Role } = require('discord.js');
  * 
  * @extends {BpCollection<string, Role>}
  */
-class RoleCollection extends BpCollection {}
+class RoleCollection extends BpCollection {
+  constructor() {
+    super({
+      keyExtractor: /** @type {(r: Role) => string} */ (r => r.name)
+    });
+  }
+}
 
 module.exports = RoleCollection;
