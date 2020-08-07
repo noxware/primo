@@ -8,12 +8,14 @@ const games = require('../games');
  */
 
  module.exports = {
-  name: 'vote',
-  description: 'Votes during day to kill someone.',
+  name: 'NAME',
+  description: 'DESC.',
   guildOnly: true,
+  args: true,
+  usage: 'USAGE',
   cooldown: 10,
   execute: /** @type {(message: Message, args: string[]) => any} */ (message, args) => {
     const g = games.obtainGame(/** @type {TextChannel} */ (message.channel));
-    g.emit('vote_command', message, args);
+    g.emit('NAME_command', message, args);
   }
 };

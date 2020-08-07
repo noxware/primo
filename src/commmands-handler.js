@@ -4,7 +4,7 @@ const { prefix } = require('./config.json');
  
 /**
  * 
- * @param {Discord.Client & {commands: Discord.Collection<any, any>}} client 
+ * @param {Discord.Client & {commands?: Discord.Collection<any, any>}} client 
  */
 function setupCommands(client) {
   client.commands = new Discord.Collection();

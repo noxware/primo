@@ -1,5 +1,3 @@
-const EventCenter = (typeof require !== 'undefined') ?  require('events').EventEmitter : undefined;
-
 /**
  * Returns a random integer number from the [min, max] interval.
  * 
@@ -64,32 +62,15 @@ class InvalidArgumentsError extends Error {
 }
 
 /**
- * Error thrown when events are neccesary but not supported.
- */
-class EventsSupportError extends Error {
-  /**
-   * @param {string} [customMsg] - Custom message to show.
-   */
-  constructor(customMsg) {
-    super(customMsg || 'Events are not supported.');
-
-    this.name = this.constructor.name;
-    //Error.captureStackTrace(this, ReadOnlyError)
-  }
-}
-
-/**
  * Configuration object for BpCollections.
  * 
  * @typedef {Object} BpCollectionConfig
- * @property {boolean} [enableEvents=false]
  * @property {(o: any) => any} [keyExtractor]
  */
 
 /** @type {BpCollectionConfig} */
 const defaultBulletproofConfig = {
   keyExtractor: undefined,
-  enableEvents: false
 }
 
 /**
@@ -113,11 +94,6 @@ class BpCollection {
 
     // Save configuration
     this._keyExtractor = config.keyExtractor;
-    this._enableEvents = Boolean(config.enableEvents);
-
-    //Enable events if neccesary
-    if (this._enableEvents)
-      this.activateEvents();
 
     //Init things
     this.reset();
@@ -132,16 +108,6 @@ class BpCollection {
     else
       /** @type {Map<K, V>} */
       this._map = new Map();
-  }
-
-  /**
-   * Enable events support.
-   */
-  activateEvents() {
-    if (EventCenter)
-      this._ec = new EventCenter();
-    else
-      throw new EventsSupportError();
   }
 
   //// PROPERTY GETTERS AND SETTERS ////
@@ -247,9 +213,6 @@ class BpCollection {
       throw new InvalidArgumentsError(`'undefined' keys are not allowed.`);
 
     this._map.set(key, value);
-
-    if (this._ec)
-      this._ec.emit('add', value, key, this);
 
     return this;
   }
@@ -373,6 +336,23 @@ class BpCollection {
   }
 
   /**
+   * Check which keys are not present in the collection.
+   * 
+   * @param {Iterable<K>} ks 
+   * @returns {K[]} - Keys not found.
+   */
+  checkKeys(ks) {
+    /** @type {K[]} */
+    const res = []
+
+    for (const k of ks)
+      if (!this.hasKey(k))
+        res.push(k);
+
+    return res;
+  }
+
+  /**
    * Remove the element asociated to the key. Returns the element.
    * 
    * @param {K} k 
@@ -382,9 +362,6 @@ class BpCollection {
   removeKey(k) {
     const value = this.key(k)
     const deleted = this._map.delete(k)
-
-    if (deleted && this._ec)
-      this._ec.emit('remove', value, k, this);
 
     return value;
   }
@@ -459,6 +436,8 @@ class BpCollection {
 
     return res;
   }
+
+
 
   /**
    * Returns a new BpCollection preserving the keys/values of both BpCollections.
