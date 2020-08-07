@@ -26,7 +26,25 @@ class Game extends EventEmitter {
     this.unusedRoles = new RoleCollection();
     this.actions = new ActionColletion();
 
-    
+    this.state = 'ready';
+
+    this.voted = new PlayerCollection();
+    /** @type {Map<string, number>} */
+    this.votes = new Map();
+  }
+
+  /**
+   * Resets the game
+   */
+  reset() {
+    this.players.reset();
+    this.unusedRoles.reset();
+    this.actions.reset();
+
+    this.state = 'ready';
+
+    this.voted.reset();
+    this.votes.clear();
   }
 }
 

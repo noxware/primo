@@ -26,21 +26,23 @@ async function handler(message, roleNames) {
     return;
   }
 
-  const rc = roles.rolesInTurnOrder.intersection(roleNames);
+  const invalidRoles = roles.rolesInTurnOrder.checkKeys(roleNames);
 
-  if (rc.size < roleNames.length) {
-    await message.reply(`Invalid role ${rc.}.`);
+  if (invalidRoles.length > 0) {
+    await message.reply(`Invalid roles ${invalidRoles.map(r => `'${r}'`).join(', ')}.`);
     return;
   }
 
+  const rc = roles.rolesInTurnOrder.intersection(roleNames);
+
   let assasinGroup = 0;
-  let assasinTeam = 0;
+  let mafiaTeam = 0;
   /*let villageTeam = false;*/
   let otherTeams = 0;
 
   for (const r of rc) {
     if (r.group === 'assassin') assasinGroup++;
-    if (r.team === 'mafia') assasinTeam++;
+    if (r.team === 'mafia') mafiaTeam++;
     /*villageTeam = villageTeam || r.team === 'village';*/
     if(r.team === undefined || r.team === 'village') otherTeams++;
   }
@@ -55,11 +57,13 @@ async function handler(message, roleNames) {
     return;
   }
 
-  gameState.reset();
+  game.reset();
 
-  gameState.unusedRoles = rc;
+  game.unusedRoles = rc;
 
   await message.channel.send('The game has been configured successfully with the specified roles.');
+
+  game.emit('roles', game, message, roleNames);
 }
 
 module.exports = handler;

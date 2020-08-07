@@ -15,7 +15,7 @@ const ReadOnlyError = require('../errors/readonly');
 class Player  {
   /**
    * 
-   * @param {discord.User} user 
+   * @param {discord.User | discord.GuildMember} user 
    * @param {Role} role 
    * @param {Game} game 
    */
