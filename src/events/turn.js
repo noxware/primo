@@ -11,6 +11,8 @@
  * @param {Player} player
  */
 module.exports = async (game, player) => {
-  if (player)
+  if (player) {
+    game.currentPlayer = player;
     await player.onTurn();
+  }
 }

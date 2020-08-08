@@ -7,6 +7,7 @@ const ActionColletion = require('../collections/ActionCollection');
 const Action = require('../../oldCode/src/game/objects/Action');
 
 const fs = require('fs');
+const Player = require('./Player');
 
 /**
  * Stores the game data and is the event emmiter for every stage in the game.
@@ -27,6 +28,8 @@ class Game extends CustomEmitter {
     this.actions = new ActionColletion();
 
     this.state = 'ready';
+    /** @type {Player} */
+    this.currentPlayer = undefined;
 
     this.voted = new PlayerCollection();
     /** @type {Map<string, number>} */

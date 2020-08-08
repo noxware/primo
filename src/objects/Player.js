@@ -9,6 +9,8 @@ const ReadOnlyError = require('../errors/readonly');
  * @typedef {import('./Action')} Action
  */
 
+const PLAYER_WAIT = 1000 * 60 * 30;
+
 /**
  * Represents a player in a game.
  */
@@ -100,7 +102,78 @@ class Player  {
     await this.guildMember.send(msg);
   }
 
+  /**
+   * 
+   * @param {string | string[]} textMsg 
+   * @param {(text: string) => boolean} textFilter 
+   */
+  async ask(textMsg, textFilter) {
+    const dmChannel = await this.guildMember.createDM();
+    dmChannel.send(textMsg);
 
+    return new Promise((resolve, reject) => {
+      /**
+       * Auto ignore non playerid and just provide the message text
+       * 
+       * @param {discord.Message} msg 
+       */
+      const capsuleFilter = msg => {
+        if (msg.author.id === this.id)
+          return Boolean(textFilter(msg.content));
+      };
+
+      // MOD
+      const collector = dmChannel.createMessageCollector(capsuleFilter, {time: PLAYER_WAIT, max: 1});
+
+      collector.on('end', collected => {
+        if(collected.size === 0) {
+          // TODO: Handle kick by timeout
+          reject();
+        } else {
+          resolve(collected.first().content);
+        }
+      });
+    });
+  }
+
+  /*async choose() {}
+  async select() {}*/
+
+  /**
+   * 
+   * @param {string[]} [exceptionsIds]
+   * @param {boolean} [allowNull=true]
+   * @param {string} [customText]
+   * 
+   * @returns {Promise<Player | undefined>}
+   */
+  async selectTarget(exceptionsIds, allowNull, customText) {
+    if (allowNull === undefined) allowNull = true;
+
+    //const players = Array.from(this.gameState.players.filter(p => !(exceptionsIds && exceptionsIds.includes(p.id)) ).values());
+    const players = this.game.players.filterToArray(p => !(exceptionsIds && exceptionsIds.includes(p.id)) );
+      
+    const listOptions = players.map((p, i)=> `${i+1} - ${p.displayName}`);
+
+    if (allowNull) listOptions.push('x - Skip');
+
+    let option; // modified insted of returning to save converting two times
+    await this.ask([(customText || 'Select your target'), '', ...listOptions], text => {
+      console.log(text);
+      const p = players[Number(text) - 1];
+      console.log(Number(text) - 1);
+      console.log(p);
+
+
+      if (!p && allowNull && text === 'x') option = 'x';
+      else option = p;
+
+      return Boolean(option);
+    });
+
+    if (option === 'x') return;
+    else return option;
+  }
 }
 
 module.exports = Player;

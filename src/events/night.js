@@ -14,5 +14,7 @@ module.exports = async game => {
   for (const p of game.players)
     if (p.alive)
       await game.emit('turn', game, p);
+
+  game.currentPlayer = undefined;
   game.emit('day', game);
 }
