@@ -59,12 +59,12 @@ class Player  {
   /**
    * Kills the player. Returns if the player actually died or not.
    * 
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  kill() {
-    this._alive = this.onDead();
+  async kill() {
+    this._alive = await this.onDead();
 
-    if (!this._alive) this.game.emit('kill', [this]);
+    if (!this._alive) await this.game.emit('kill', this.game, this);
 
     return this._alive;
   }
@@ -72,11 +72,11 @@ class Player  {
   /**
    * Method called when the player is going to be killed. Returning false will cancel the kill, returning true will confirme it.
    * 
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  onDead() {
+  async onDead() {
     if (this.role.onDead)
-      return Boolean(this.role.onDead(this.game));
+      return Boolean(await this.role.onDead(this.game));
 
     return true;
   }
@@ -84,11 +84,11 @@ class Player  {
   /**
    * Method called on the player's turn.
    * 
-   * @returns {Action | undefined}
+   * @returns {Promise<Action | undefined>}
    */
-  onTurn() {
+  async onTurn() {
     if (this.role.onTurn)
-      return this.role.onTurn(this.game);
+      return await this.role.onTurn(this.game);
   }
 
   /**

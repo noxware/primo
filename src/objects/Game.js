@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const { EventEmitter } = require('events');
+const CustomEmitter = require('../lib/CustomEmitter');
 
 const PlayerCollection = require('../collections/PlayerCollection');
 const RoleCollection = require('../collections/RoleCollection');
@@ -11,7 +11,7 @@ const fs = require('fs');
 /**
  * Stores the game data and is the event emmiter for every stage in the game.
  */
-class Game extends EventEmitter {
+class Game extends CustomEmitter {
   /**
    * 
    * @param {discord.TextChannel} channel 
@@ -31,6 +31,7 @@ class Game extends EventEmitter {
     this.voted = new PlayerCollection();
     /** @type {Map<string, number>} */
     this.votes = new Map();
+    this.nightDayKills = new PlayerCollection();
   }
 
   /**
@@ -45,6 +46,10 @@ class Game extends EventEmitter {
 
     this.voted.reset();
     this.votes.clear();
+
+    this.nightDayKills.reset();
+
+    this.reset();
   }
 }
 

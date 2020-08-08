@@ -13,7 +13,7 @@ const games = require('../games');
  * @param {Message} message
  * @param {string[]} args 
  */
-function handler(message, args) {
+async function handler(message, args) {
   const game = games.obtainGame(/** @type {TextChannel} */ (message.channel));
 
   if (game.state !== 'day') {
@@ -54,11 +54,11 @@ function handler(message, args) {
   game.voted.add(source);
   message.reply('Vote recived successfully.');
 
-  game.emit('vote', game, source, target); // dead
+  await game.emit('vote', game, source, target); // dead
 
   // TODO OPTI
   if (game.voted.size >= game.players.count(p => p.alive))
-    game.emit('ejecution', game);
+    game.emit('votation_end', game);
 }
 
 module.exports = handler;
