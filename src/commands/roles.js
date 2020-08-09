@@ -16,6 +16,6 @@ module.exports = {
   cooldown: 10,
   execute: /** @type {(message: Message, roleNames: string[]) => any} */ (message, roleNames) => {
     const g = games.obtainGame(/** @type {TextChannel} */ (message.channel));
-    g.emit('roles_command', message, roleNames);
+    g.emit('roles_command', g, message, roleNames);
   }
 };

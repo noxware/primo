@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { EventEmitter } = require('events');
+const CustomEmitter = require('./lib/CustomEmitter');
 
 const EVENTS_FOLDER = './events';
 
@@ -8,12 +8,13 @@ const events = [];
 
 const eventsFiles = fs.readdirSync(EVENTS_FOLDER).filter(file => file.endsWith('.js'));
 for (const file of eventsFiles) {
-  events.push(require(`${EVENTS_FOLDER}/${file}`));
+  const name = file.replace(/\.js$/, '');
+  events.push({name, callback: require(`${EVENTS_FOLDER}/${name}`)});
 }
 
 /**
  * 
- * @param {EventEmitter} emitter 
+ * @param {CustomEmitter} emitter 
  */
 exports.loadIntoEmitter = function (emitter) {
  for (const e of events) {

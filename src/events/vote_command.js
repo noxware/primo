@@ -1,21 +1,21 @@
-const games = require('../games');
+
 
 /**
  * Type imports.
  * 
  * @typedef {import('discord.js').Message} Message
  * @typedef {import('discord.js').TextChannel} TextChannel
+ * @typedef {import('../objects/Game')} Game
  * 
  */
 
 /**
  * 
+ * @param {Game} game
  * @param {Message} message
  * @param {string[]} args 
  */
-async function handler(message, args) {
-  const game = games.obtainGame(/** @type {TextChannel} */ (message.channel));
-
+async function handler(game, message, args) {
   if (game.state !== 'day') {
     message.reply('The game is not in the day phase.');
     return;

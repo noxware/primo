@@ -64,7 +64,7 @@ class Player  {
    * @returns {Promise<boolean>}
    */
   async kill() {
-    this._alive = await this.onDead();
+    this._alive = !(await this.onDead());
 
     if (!this._alive) await this.game.emit('kill', this.game, this);
 

@@ -40,7 +40,8 @@ class CustomEmitter {
    * @param  {...any} args 
    */
   async emit(eventName, ...args) {
-    return Promise.all(iterateWhileRunning(this.events.get(eventName), ...args));
+    if (this.events.has(eventName))
+      return Promise.all(iterateWhileRunning(this.events.get(eventName), ...args));
   }
 
   reset() {

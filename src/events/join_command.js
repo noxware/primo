@@ -1,18 +1,18 @@
-const games = require('../games');
+
 const Player = require('../objects/Player');
 
 /**
  * @typedef {import('discord.js').Message} Message
  * @typedef {import('discord.js').TextChannel} TextChannel
+ * @typedef {import('../objects/Game')} Game
  */
 
 /**
  * 
+ * @param {Game} g 
  * @param {Message} message 
  */
-async function handler(message) {
-  const g = games.obtainGame(/** @type {TextChannel} */ (message.channel));
-
+async function handler(g, message) {
   if (g.state != 'ready') {
     await message.reply(`There is a game in curse so you can't join now.`);
     return;

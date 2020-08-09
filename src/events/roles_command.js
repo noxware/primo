@@ -1,21 +1,22 @@
+
+
 const roles = require('../roles');
-const RoleCollection = require('../collections/RoleCollection');
-const games = require('../games');
 
 /**
  * @typedef {import('discord.js').Message} Message
  * @typedef {import('discord.js').TextChannel} TextChannel
+ * @typedef {import('../objects/Game')} Game
  */
 
 const MIN_PLAYERS = 3;
 
 /**
  * 
+ * @param {Game} game
  * @param {Message} message 
  * @param {string[]} roleNames 
  */
-async function handler(message, roleNames) {
-  const game = games.obtainGame(/** @type {TextChannel} */ (message.channel));
+async function handler(game, message, roleNames) {
   if (game.state != 'ready') {
     await message.reply(`You can't change roles when there is a game in curse.`);
     return;

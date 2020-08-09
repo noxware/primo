@@ -17,6 +17,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^14.0.14",
+    "detect-circular-deps": "^2.0.0",
     "nodemon": "^2.0.4",
     "typescript": "^3.9.5"
   },

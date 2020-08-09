@@ -95,19 +95,16 @@ class BpCollection {
     // Save configuration
     this._keyExtractor = config.keyExtractor;
 
-    //Init things
-    this.reset();
+    // Data
+    /** @type {Map<K, V>} */
+    this._map = new Map();
   }
 
   /**
    * Resets the collection clearing it.
    */
   reset() {
-    if (this._map)
       this._map.clear();
-    else
-      /** @type {Map<K, V>} */
-      this._map = new Map();
   }
 
   //// PROPERTY GETTERS AND SETTERS ////

@@ -5,7 +5,7 @@ module.exports = [
 
   'police',
 
-  'jester',
+  //'jester',
 
   'village'
 ]

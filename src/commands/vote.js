@@ -14,6 +14,6 @@ const games = require('../games');
   cooldown: 10,
   execute: /** @type {(message: Message, args: string[]) => any} */ (message, args) => {
     const g = games.obtainGame(/** @type {TextChannel} */ (message.channel));
-    g.emit('vote_command', message, args);
+    g.emit('vote_command', g, message, args);
   }
 };

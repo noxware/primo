@@ -15,6 +15,14 @@ module.exports = async game => {
     if (p.alive)
       await game.emit('turn', game, p);
 
+  for (const a of game.actions.inActionOrder) {
+    await game.emit('action', game, a);
+  }
+
+  for (const a of game.actions.inActionOrder) {
+    await game.emit('clear', game, a);
+  }
+
   game.currentPlayer = undefined;
   game.emit('day', game);
 }

@@ -1,0 +1,1 @@
+Don't require 'games' here. It will cause a circular dependency.

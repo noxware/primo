@@ -33,7 +33,7 @@ async function onTurn(game) {
     source: game.currentPlayer,
     target,
     run: ({target}) => {
-      correct = target.role.group === 'assasin';
+      correct = target.role.group === 'assassin';
       return true;
     },
     clear: async ({target}) => correct && await game.channel.send('Well accused')

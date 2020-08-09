@@ -1,3 +1,5 @@
+
+
 const discord = require('discord.js');
 const CustomEmitter = require('../lib/CustomEmitter');
 
@@ -8,6 +10,7 @@ const Action = require('../../oldCode/src/game/objects/Action');
 
 const fs = require('fs');
 const Player = require('./Player');
+const { loadIntoEmitter } = require('../events');
 
 /**
  * Stores the game data and is the event emmiter for every stage in the game.
@@ -35,6 +38,8 @@ class Game extends CustomEmitter {
     /** @type {Map<string, number>} */
     this.votes = new Map();
     this.nightDayKills = new PlayerCollection();
+
+    loadIntoEmitter(this);
   }
 
   /**
@@ -52,7 +57,9 @@ class Game extends CustomEmitter {
 
     this.nightDayKills.reset();
 
-    this.reset();
+    super.reset();
+
+    loadIntoEmitter(this);
   }
 }
 

@@ -13,6 +13,8 @@
 module.exports = async (game, player) => {
   if (player) {
     game.currentPlayer = player;
-    await player.onTurn();
+    const action = await player.onTurn();
+    if (action)
+      game.actions.add(action);
   }
 }
